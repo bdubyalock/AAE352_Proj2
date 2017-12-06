@@ -1,0 +1,212 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>AAE352_Project2_Group11</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-12-06"><meta name="DC.source" content="AAE352_Project2_Group11.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Section 1: Calculate Delta K</a></li><li><a href="#3">Section 2: Calculate linear regression of log(da/dn) vs log(delta_K)</a></li><li><a href="#4">Using this information, calculate reference stress</a></li><li><a href="#5">The Next Section will plot and calculate the minimum crack size (a) for given yield stress</a></li><li><a href="#6">Format Graph</a></li></ul></div><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% AAE 352 Project 2 -- Group 11</span>
+<span class="comment">% This code is designed to calculate the changes in stress at given</span>
+<span class="comment">% striation measurements for the given dimensions, which were measured and</span>
+<span class="comment">% hard-coded into the program.</span>
+<span class="comment">% Then, using that value, the maximum crack size is calculated for the</span>
+<span class="comment">% given dimensions. For a given crack size, this program will plot the</span>
+<span class="comment">% fatigue curve and yielding curve on the same plot and show the</span>
+<span class="comment">% maximum crack size possible for our known reference stress and yield</span>
+<span class="comment">% stress.</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%dimensions for material from project description:</span>
+w = 23e-3; <span class="comment">%constant</span>
+D = 25.4e-3; <span class="comment">%constant</span>
+t = 9.4e-3; <span class="comment">%constant</span>
+yield_stress = 386e6; <span class="comment">%Material Property</span>
+KIC = 37e6; <span class="comment">%Material Property</span>
+</pre><h2 id="2">Section 1: Calculate Delta K</h2><pre class="codeinput"><span class="comment">%Calculated using NASA document:</span>
+<span class="comment">%Interpolation for #3: ((.24) * (3e-9/3.1e-8))+16.68</span>
+a = [1.83e-3 3.81e-3 7.39e-3]; <span class="comment">%Given in problem</span>
+da_dn =   [1.2/12 , 2.4 / 11 , 6/9]; <span class="comment">%um/striation</span>
+da_dn = da_dn .* 1e-6; <span class="comment">%Convert to meters/striation</span>
+delta_K = [8.97   , 11.07    , 16.7032]; <span class="comment">%derived from table (Mpa * sqrt(m))</span>
+delta_K = delta_K * 1e6; <span class="comment">%Convert to Pa * sqrt(m)</span>
+</pre><h2 id="3">Section 2: Calculate linear regression of log(da/dn) vs log(delta_K)</h2><p>This portion was completed using Microsoft Excel from excel: y = 3.0052x - 64.171 (y=mx + e^c)</p><pre class="codeinput">C = 1.35173e-28; <span class="comment">%Excel: =LN(-64.171)</span>
+m = 3.01; <span class="comment">%constant</span>
+</pre><h2 id="4">Using this information, calculate reference stress</h2><pre class="codeinput">x = a./w;
+beta_1 = 30.795.*x.^4 - 51.44 .* x.^3 + 29.462 .* x.^2 - 6.2025 .* x +2.0791;
+delta_sigma = delta_K./(beta_1.*sqrt(pi.*a));
+sigma_ref = mean(delta_sigma);
+fprintf(<span class="string">'Reference Stress: %.4f MPa\n'</span>,sigma_ref/1e6);
+</pre><pre class="codeoutput">Reference Stress: 63.8990 MPa
+</pre><h2 id="5">The Next Section will plot and calculate the minimum crack size (a) for given yield stress</h2><pre class="codeinput">a = 1e-3:1e-6:20e-3; <span class="comment">% redefine a as a range of possible crack sizes</span>
+err = 1000; <span class="comment">%initialize error</span>
+sigma = zeros(size(a)); <span class="comment">%Initialize cracking stress</span>
+sigma_net = zeros(size(a)); <span class="comment">%Initialize stress for yielding</span>
+acr_calc= 0; <span class="comment">%Initialize critical crack size calculation</span>
+Atotal = (2*w+D)*t; <span class="comment">%Total Area (constant)</span>
+<span class="keyword">for</span> i = 1:length(a) <span class="comment">%Cycle through crack sizes</span>
+    x = a(i) / w; <span class="comment">%This is the definition of x</span>
+    beta = 30.795.*x.^4 - 51.44 .* x.^3 + 29.462 .* x.^2 - 6.2025 .* x +2.0791; <span class="comment">%recalculate Beta at each crack size</span>
+    sigma(i) = KIC / (beta*sqrt(pi*a(i))); <span class="comment">%Create a vector of sigma at each crack size</span>
+    acr = ((KIC/(beta*sigma_ref))^2)/pi; <span class="comment">%Calculate critical crack size</span>
+    <span class="keyword">if</span> abs(acr - a(i)) &lt; err <span class="comment">%If error is less than the error from the previous iteration</span>
+        acr_calc = acr; <span class="comment">%Save Critical Crack Size for printing</span>
+        err = abs(acr-a(i)); <span class="comment">%Save new error</span>
+    <span class="keyword">end</span>
+    sigma_net(i) = yield_stress*(2*w-a(i))/(2*w+D); <span class="comment">%Create a vector of sigma_net at each crack size</span>
+    sigma_ref_line(i) = sigma_ref;
+<span class="keyword">end</span>
+plot(a,sigma); <span class="comment">%plot sigma for each crack size</span>
+hold <span class="string">on</span>
+plot(a,sigma_net); <span class="comment">%plot sigma_net for each crack size</span>
+plot(a,sigma_ref_line); <span class="comment">%plot a reference of our reference stress</span>
+plot(acr_calc,sigma_ref,<span class="string">'x'</span>); <span class="comment">%Verify max crack size on graph</span>
+fprintf(<span class="string">'Maximum Crack Size: %.4f mm\n'</span>, acr_calc * 1e3);
+</pre><pre class="codeoutput">Maximum Crack Size: 18.9031 mm
+</pre><img vspace="5" hspace="5" src="AAE352_Project2_Group11_01.png" alt=""> <h2 id="6">Format Graph</h2><pre class="codeinput">title(<span class="string">'Crack Size vs. Stress for Yielding and Cracking'</span>);
+ylim([0, yield_stress]);
+xlim([1e-3, .02]);
+legend(<span class="string">'Fatigue Curve'</span>,<span class="string">'Yield Curve'</span>,<span class="string">'Reference Stress'</span>,<span class="string">'Maximum Crack Size'</span>);
+xlabel(<span class="string">'Crack Size (m)'</span>);
+ylabel(<span class="string">'Stress (Pa)'</span>);
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="AAE352_Project2_Group11_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AAE 352 Project 2 REPLACE_WITH_DASH_DASH Group 11
+% This code is designed to calculate the changes in stress at given
+% striation measurements for the given dimensions, which were measured and
+% hard-coded into the program.
+% Then, using that value, the maximum crack size is calculated for the
+% given dimensions. For a given crack size, this program will plot the
+% fatigue curve and yielding curve on the same plot and show the
+% maximum crack size possible for our known reference stress and yield
+% stress.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%dimensions for material from project description:
+w = 23e-3; %constant
+D = 25.4e-3; %constant
+t = 9.4e-3; %constant
+yield_stress = 386e6; %Material Property
+KIC = 37e6; %Material Property 
+
+%% Section 1: Calculate Delta K
+%Calculated using NASA document:
+%Interpolation for #3: ((.24) * (3e-9/3.1e-8))+16.68
+a = [1.83e-3 3.81e-3 7.39e-3]; %Given in problem
+da_dn =   [1.2/12 , 2.4 / 11 , 6/9]; %um/striation
+da_dn = da_dn .* 1e-6; %Convert to meters/striation
+delta_K = [8.97   , 11.07    , 16.7032]; %derived from table (Mpa * sqrt(m))
+delta_K = delta_K * 1e6; %Convert to Pa * sqrt(m)
+
+%% Section 2: Calculate linear regression of log(da/dn) vs log(delta_K)
+% This portion was completed using Microsoft Excel
+% from excel: y = 3.0052x - 64.171 (y=mx + e^c)
+C = 1.35173e-28; %Excel: =LN(-64.171)
+m = 3.01; %constant
+
+
+%% Using this information, calculate reference stress
+x = a./w;
+beta_1 = 30.795.*x.^4 - 51.44 .* x.^3 + 29.462 .* x.^2 - 6.2025 .* x +2.0791;
+delta_sigma = delta_K./(beta_1.*sqrt(pi.*a));
+sigma_ref = mean(delta_sigma);
+fprintf('Reference Stress: %.4f MPa\n',sigma_ref/1e6);
+
+%% The Next Section will plot and calculate the minimum crack size (a) for given yield stress
+a = 1e-3:1e-6:20e-3; % redefine a as a range of possible crack sizes
+err = 1000; %initialize error
+sigma = zeros(size(a)); %Initialize cracking stress
+sigma_net = zeros(size(a)); %Initialize stress for yielding
+acr_calc= 0; %Initialize critical crack size calculation
+Atotal = (2*w+D)*t; %Total Area (constant)
+for i = 1:length(a) %Cycle through crack sizes
+    x = a(i) / w; %This is the definition of x
+    beta = 30.795.*x.^4 - 51.44 .* x.^3 + 29.462 .* x.^2 - 6.2025 .* x +2.0791; %recalculate Beta at each crack size
+    sigma(i) = KIC / (beta*sqrt(pi*a(i))); %Create a vector of sigma at each crack size
+    acr = ((KIC/(beta*sigma_ref))^2)/pi; %Calculate critical crack size
+    if abs(acr - a(i)) < err %If error is less than the error from the previous iteration
+        acr_calc = acr; %Save Critical Crack Size for printing
+        err = abs(acr-a(i)); %Save new error
+    end
+    sigma_net(i) = yield_stress*(2*w-a(i))/(2*w+D); %Create a vector of sigma_net at each crack size
+    sigma_ref_line(i) = sigma_ref;
+end
+plot(a,sigma); %plot sigma for each crack size
+hold on
+plot(a,sigma_net); %plot sigma_net for each crack size
+plot(a,sigma_ref_line); %plot a reference of our reference stress
+plot(acr_calc,sigma_ref,'x'); %Verify max crack size on graph
+fprintf('Maximum Crack Size: %.4f mm\n', acr_calc * 1e3);
+
+%% Format Graph
+title('Crack Size vs. Stress for Yielding and Cracking');
+ylim([0, yield_stress]);
+xlim([1e-3, .02]);
+legend('Fatigue Curve','Yield Curve','Reference Stress','Maximum Crack Size');
+xlabel('Crack Size (m)');
+ylabel('Stress (Pa)');
+grid on
+
+##### SOURCE END #####
+--></body></html>

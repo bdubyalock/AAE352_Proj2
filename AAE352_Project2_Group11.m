@@ -32,14 +32,14 @@ C = 1.35173e-28; %Excel: =LN(-64.171)
 m = 3.01; %constant
 
 
-%% Using this information, calculate reference stress
+%% Section 3: Using this information, calculate reference stress
 x = a./w;
 beta_1 = 30.795.*x.^4 - 51.44 .* x.^3 + 29.462 .* x.^2 - 6.2025 .* x +2.0791;
 delta_sigma = delta_K./(beta_1.*sqrt(pi.*a));
 sigma_ref = mean(delta_sigma);
 fprintf('Reference Stress: %.4f MPa\n',sigma_ref/1e6);
 
-%% The Next Section will plot and calculate the minimum crack size (a) for given yield stress
+%% Section 4: Plot and calculate the minimum crack size (a) for given yield stress
 a = 1e-3:1e-6:20e-3; % redefine a as a range of possible crack sizes
 err = 1000; %initialize error
 sigma = zeros(size(a)); %Initialize cracking stress
@@ -65,7 +65,7 @@ plot(a,sigma_ref_line); %plot a reference of our reference stress
 plot(acr_calc,sigma_ref,'x'); %Verify max crack size on graph
 fprintf('Maximum Crack Size: %.4f mm\n', acr_calc * 1e3);
 
-%% Format Graph
+%% Section 5: Format Graph
 title('Crack Size vs. Stress for Yielding and Cracking');
 ylim([0, yield_stress]);
 xlim([1e-3, .02]);
