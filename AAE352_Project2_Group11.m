@@ -66,7 +66,7 @@ plot(acr_calc,sigma_ref,'x'); %Verify max crack size on graph
 fprintf('Maximum Crack Size: %.4f mm\n', acr_calc * 1e3);
 
 %% Section 5: Format Graph
-title('Crack Size vs. Stress for Yielding and Cracking');
+title('Crack Size vs. Residual Strength for Yielding and Cracking');
 ylim([0, yield_stress]);
 xlim([1e-3, .02]);
 legend('Fatigue Curve','Yield Curve','Reference Stress','Maximum Crack Size');
